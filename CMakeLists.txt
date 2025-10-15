@@ -1,7 +1,17 @@
 ﻿# CMakeList.txt : Top-level CMake project file, do global configuration
 # and include sub-projects here.
 #
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.15)
+
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/main.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
 
 # Enable Hot Reload for MSVC compilers if supported.
 if (POLICY CMP0141)
@@ -11,5 +21,10 @@ endif()
 
 project ("mnist_digit_recognition")
 
+enable_testing()
+
 # Include sub-projects.
-add_subdirectory ("mnist_digit_recognition")
+add_subdirectory ("src")
+add_subdirectory ("tests")
+add_subdirectory ("libs/mnist_loader")
+add_subdirectory ("libs/neural")
