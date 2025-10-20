@@ -16,6 +16,7 @@ template <Numeric T>
 class [[nodiscard]] Matrix {
  public:
   // Constructors
+  Matrix() = delete;
   explicit Matrix(const std::vector<T>& data, size_t rows, size_t cols);
   explicit Matrix(size_t rows, size_t cols);
 

@@ -91,7 +91,7 @@ Matrix<T> Matrix<T>::operator+(const Matrix<T>& other) const {
   assert(rows_ == other.rows_ && cols_ == other.cols_ &&
          "Matrix dimensions must match for addition.");
   Matrix<T> result(rows_, cols_);
-  for (size_t i = 0; < rows_ * cols_; ++i) {
+  for (size_t i = 0; i < rows_ * cols_; ++i) {
     result.data_[i] = data_[i] + other.data_[i];
   }
   return result;
@@ -120,7 +120,7 @@ Matrix<T>& Matrix<T>::operator+=(const Matrix& other) {
 
 template <Numeric T>
 Matrix<T>& Matrix<T>::operator*=(T scalar) {
-  for (auto val& : data_) {
+  for (auto& val : data_) {
     val *= scalar;
   }
   return *this;
@@ -128,7 +128,7 @@ Matrix<T>& Matrix<T>::operator*=(T scalar) {
 
 template <Numeric T>
 Matrix<T>& Matrix<T>::operator/=(T scalar) {
-  for (auto val& : data_) {
+  for (auto& val : data_) {
     assert(scalar != T(0) && "Division by zero is invalid.");
     val /= scalar;
   }
@@ -137,7 +137,7 @@ Matrix<T>& Matrix<T>::operator/=(T scalar) {
 
 template <Numeric T>
 Matrix<T>& Matrix<T>::operator+=(T scalar) {
-  for (auto val& : data_) {
+  for (auto& val : data_) {
     val += scalar;
   }
   return *this;
@@ -145,7 +145,7 @@ Matrix<T>& Matrix<T>::operator+=(T scalar) {
 
 template <Numeric T>
 Matrix<T>& Matrix<T>::operator-=(T scalar) {
-  for (auto val& : data_) {
+  for (auto& val : data_) {
     val -= scalar;
   }
   return *this;
