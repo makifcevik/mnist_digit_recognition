@@ -115,6 +115,97 @@ TEST(ToVector, NonConstVersionReturnsCorrectDataVector) {
   EXPECT_EQ(vec, data);
 }
 
+TEST(OperatorMultiplyByMatrix, MultipliesTwoMatrices) {
+  // Arrange
+  Matrix<int> matA({1, 2, 3, 4}, 2, 2);
+  Matrix<int> matB({5, 6, 7, 8}, 2, 2);
+  // Act
+  Matrix<int> result = matA * matB;
+  // Assert
+  EXPECT_EQ(result(0, 0), 19);
+  EXPECT_EQ(result(0, 1), 22);
+  EXPECT_EQ(result(1, 0), 43);
+  EXPECT_EQ(result(1, 1), 50);
+}
+
+TEST(OperatorAddMatrix, AddsTwoMatrices) {
+  // Arrange
+  Matrix<int> matA({1, 2, 3, 4}, 2, 2);
+  Matrix<int> matB({5, 6, 7, 8}, 2, 2);
+  // Act
+  Matrix<int> result = matA + matB;
+  // Assert
+  EXPECT_EQ(result(0, 0), 6);
+  EXPECT_EQ(result(0, 1), 8);
+  EXPECT_EQ(result(1, 0), 10);
+  EXPECT_EQ(result(1, 1), 12);
+}
+
+TEST(OperatorSubstractMatrix, SubstractsTwoMatrices) {
+  // Arrange
+  Matrix<int> matA({5, 6, 7, 8}, 2, 2);
+  Matrix<int> matB({1, 2, 3, 4}, 2, 2);
+  // Act
+  Matrix<int> result = matA - matB;
+  // Assert
+  EXPECT_EQ(result(0, 0), 4);
+  EXPECT_EQ(result(0, 1), 4);
+  EXPECT_EQ(result(1, 0), 4);
+  EXPECT_EQ(result(1, 1), 4);
+}
+
+TEST(OperatorMultiplyAssignScalar, MultipliesEachElementByScalarInPlace) {
+  // Arrange
+  Matrix<int> mat({1, 2, 3, 4}, 2, 2);
+  int scalar = 3;
+  // Act
+  mat *= scalar;
+  // Assert
+  EXPECT_EQ(mat(0, 0), 3);
+  EXPECT_EQ(mat(0, 1), 6);
+  EXPECT_EQ(mat(1, 0), 9);
+  EXPECT_EQ(mat(1, 1), 12);
+}
+
+TEST(OperatorDivideAssignScalar, DividesEachElementByScalarInPlace) {
+  // Arrange
+  Matrix<int> mat({5, 10, 15, 20}, 2, 2);
+  int scalar = 5;
+  // Act
+  mat /= scalar;
+  // Assert
+  EXPECT_EQ(mat(0, 0), 1);
+  EXPECT_EQ(mat(0, 1), 2);
+  EXPECT_EQ(mat(1, 0), 3);
+  EXPECT_EQ(mat(1, 1), 4);
+}
+
+TEST(OperatorAddAssignScalar, AddsScalarToEachElementInPlace) {
+  // Arrange
+  Matrix<int> mat({1, 2, 3, 4}, 2, 2);
+  int scalar = 5;
+  // Act
+  mat += scalar;
+  // Assert
+  EXPECT_EQ(mat(0, 0), 6);
+  EXPECT_EQ(mat(0, 1), 7);
+  EXPECT_EQ(mat(1, 0), 8);
+  EXPECT_EQ(mat(1, 1), 9);
+}
+
+TEST(OperatorSubstractAssignScalar, SubstractsScalarFromEachElementInPlace) {
+  // Arrange
+  Matrix<float> mat({1.0f, 2.0f, 3.0f, 4.0f}, 2, 2);
+  float scalar = 2.0f;
+  // Act
+  mat -= scalar;
+  // Assert
+  EXPECT_EQ(mat(0, 0), -1.0f);
+  EXPECT_EQ(mat(0, 1), 0.0f);
+  EXPECT_EQ(mat(1, 0), 1.0f);
+  EXPECT_EQ(mat(1, 1), 2.0f);
+}
+
 // ----------
 // Non-member operations
 // ----------
@@ -170,8 +261,7 @@ TEST(OperatorSubstractMatrixFromScalar, SubstractsScalarFromEachElement) {
   EXPECT_EQ(result(1, 1), 2.0f);
 }
 
-TEST(OperatorMultiplyScalarByMatrix,
-       MultipliesScalarWithEachElement) {
+TEST(OperatorMultiplyScalarByMatrix, MultipliesScalarWithEachElement) {
   // Arrange
   Matrix<int> mat({1, 2, 3, 4}, 2, 2);
   int scalar = 3;
@@ -210,8 +300,7 @@ TEST(OperatorAddScalarToMatrix, AddsScalarToEachElement) {
   EXPECT_EQ(result(1, 1), 9);
 }
 
-TEST(OperatorSubstractScalarFromMatrix,
-       SubstractsEachElementByScalar) {
+TEST(OperatorSubstractScalarFromMatrix, SubstractsEachElementByScalar) {
   // Arrange
   Matrix<float> mat({1.0f, 2.0f, 3.0f, 4.0f}, 2, 2);
   float scalar = 2.0f;
