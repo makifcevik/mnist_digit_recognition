@@ -1,3 +1,5 @@
+// MIT License
+
 #include "matrix.h"
 
 #include <gtest/gtest.h>

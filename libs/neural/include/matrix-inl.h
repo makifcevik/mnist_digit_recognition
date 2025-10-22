@@ -1,3 +1,5 @@
+// MIT License
+
 // This file contains the implementation of the Matrix class template.
 // It is meant to be included only inside matrix.h.
 
