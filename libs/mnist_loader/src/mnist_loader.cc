@@ -28,21 +28,21 @@ int32_t MNISTLoader::ReadInt32(std::ifstream& file) const {
 
 std::vector<uint8_t> MNISTLoader::ReadImages(const std::string& path) const {
   std::ifstream file(path, std::ios::binary);
-  CHECK(!file.is_open()) << "Could not open file: " << path;
+  CHECK(file.is_open()) << "Could not open file: " << path;
   LOG(INFO) << "Reading images from: " << path;
 
   // ReadInt32() already checks for endianness and reverses if necessary
-  CHECK(ReadInt32(file) != kImageMagicNumber)
+  CHECK(ReadInt32(file) == kImageMagicNumber)
       << "Invalid magic number in image file: " << path;
 
   const int32_t num_images = ReadInt32(file);
   const int32_t num_rows = ReadInt32(file);
   const int32_t num_cols = ReadInt32(file);
 
-  CHECK(num_images <= 0) << "Invalid number of images in file: " << path;
+  CHECK(num_images > 0) << "Invalid number of images in file: " << path;
 
   // MNIST images are always 28x28 pixels
-  CHECK(num_rows != 28 || num_cols != 28)
+  CHECK(num_rows == 28 && num_cols == 28)
       << "Unexpected image dimensions in file: " << path;
 
   // Read image data
@@ -54,11 +54,11 @@ std::vector<uint8_t> MNISTLoader::ReadImages(const std::string& path) const {
 
 std::vector<uint8_t> MNISTLoader::ReadLabels(const std::string& path) const {
   std::ifstream file(path, std::ios::binary);
-  CHECK(!file.is_open()) << "Could not open file: " << path;
+  CHECK(file.is_open()) << "Could not open file: " << path;
   LOG(INFO) << "Reading labels from: " << path;
 
   // ReadInt32() already checks for endianness and reverses if necessary
-  CHECK(ReadInt32(file) != kLabelMagicNumber)
+  CHECK(ReadInt32(file) == kLabelMagicNumber)
       << "Invalid magic number in label file: " << path;
 
   // Read label data
