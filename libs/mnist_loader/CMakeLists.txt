@@ -13,4 +13,6 @@ target_link_libraries(mnist_loader_lib
   PUBLIC
 	neural_lib
 	absl::base
-	absl::status)
+	absl::status
+	absl::check
+    absl::strings)

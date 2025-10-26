@@ -74,6 +74,8 @@ Dataset MNISTLoader::Load(const std::string& image_file_path,
   Dataset dataset;
   dataset.data = ReadImages(image_file_path);
   dataset.labels = ReadLabels(label_file_path);
+  CHECK_EQ(dataset.data.size() / (28 * 28), dataset.labels.size())
+      << "Number of images and labels do not match!";
   LOG(INFO) << "MNIST dataset loaded successfully.";
   return dataset;
 }
