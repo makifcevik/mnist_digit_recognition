@@ -5,6 +5,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_library(neural_lib "src/neural_layer.cc" "include/dataset.h" "include/matrix.h")
+add_library(neural_lib "src/neural_layer.cc" "include/dataset.h" "include/matrix.h" "include/linear_layer.h")
 
 target_include_directories(neural_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
