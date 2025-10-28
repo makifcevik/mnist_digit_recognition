@@ -33,7 +33,7 @@ class [[nodiscard]] Matrix {
 
   // Static Random Matrix Generator
   static Matrix Random(size_t rows, size_t cols, T min, T max,
-                       uint32_t seed = 0);
+                       uint32_t seed);
 
   Matrix GetTranspose() const;
 
