@@ -3,16 +3,15 @@
 // This file contains the implementation of the Matrix class template.
 // It is meant to be included only inside matrix.h.
 
-#include <cassert>
-
 #include <random>
+
+#include <absl/log/check.h>
 
 // Constructor from data vector
 template <Numeric T>
 Matrix<T>::Matrix(const std::vector<T>& data, size_t rows, size_t cols)
     : data_(data), rows_(rows), cols_(cols) {
-  assert(data.size() == rows * cols &&
-         "Data size must match matrix dimensions");
+  CHECK(data.size() == rows * cols && "Data size must match matrix dimensions");
 }
 
 // Constructor with specified dimensions and default initialization
@@ -61,20 +60,20 @@ const T& Matrix<T>::operator()(size_t row, size_t col) const noexcept {
 
 template <Numeric T>
 T& Matrix<T>::At(size_t row, size_t col) {
-  assert(row < rows_ && col < cols_ && "Index out of bounds.");
+  CHECK(row < rows_ && col < cols_ && "Index out of bounds.");
   return data_[row * cols_ + col];
 }
 
 template <Numeric T>
 const T& Matrix<T>::At(size_t row, size_t col) const {
-  assert(row < rows_ && col < cols_ && "Index out of bounds.");
+  CHECK(row < rows_ && col < cols_ && "Index out of bounds.");
   return data_[row * cols_ + col];
 }
 
 template <Numeric T>
 Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
-  assert(cols_ == other.rows_ &&
-         "Matrix dimensions must match for multiplication");
+  CHECK(cols_ == other.rows_ &&
+        "Matrix dimensions must match for multiplication");
   Matrix<T> result(rows_, other.cols_);
   for (size_t r = 0; r < rows_; ++r) {
     for (size_t c = 0; c < other.cols_; ++c) {
@@ -90,8 +89,8 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
 
 template <Numeric T>
 Matrix<T> Matrix<T>::operator+(const Matrix<T>& other) const {
-  assert(rows_ == other.rows_ && cols_ == other.cols_ &&
-         "Matrix dimensions must match for addition.");
+  CHECK(rows_ == other.rows_ && cols_ == other.cols_ &&
+        "Matrix dimensions must match for addition.");
   Matrix<T> result(rows_, cols_);
   for (size_t i = 0; i < rows_ * cols_; ++i) {
     result.data_[i] = data_[i] + other.data_[i];
@@ -101,8 +100,8 @@ Matrix<T> Matrix<T>::operator+(const Matrix<T>& other) const {
 
 template <Numeric T>
 Matrix<T> Matrix<T>::operator-(const Matrix<T>& other) const {
-  assert(rows_ == other.rows_ && cols_ == other.cols_ &&
-         "Matrix dimensions must match for subtraction.");
+  CHECK(rows_ == other.rows_ && cols_ == other.cols_ &&
+        "Matrix dimensions must match for subtraction.");
   Matrix<T> result(rows_, cols_);
   for (size_t i = 0; i < rows_ * cols_; ++i) {
     result.data_[i] = data_[i] - other.data_[i];
@@ -131,7 +130,7 @@ Matrix<T>& Matrix<T>::operator*=(T scalar) {
 template <Numeric T>
 Matrix<T>& Matrix<T>::operator/=(T scalar) {
   for (auto& val : data_) {
-    assert(scalar != T(0) && "Division by zero is invalid.");
+    CHECK(scalar != T(0) && "Division by zero is invalid.");
     val /= scalar;
   }
   return *this;
@@ -177,11 +176,6 @@ size_t Matrix<T>::Cols() const noexcept {
 // Non-member Scalar Operations
 // ---------
 template <Numeric T>
-Matrix<T>& Matrix<T>::operator-=(const Matrix& other) {
-  return *this = (*this) - other;
-}
-
-template <Numeric T>
 inline Matrix<T> operator*(Matrix<T> lhs, T rhs) {
   return lhs *= rhs;
 }
@@ -218,7 +212,7 @@ inline Matrix<T> operator-(T lhs, Matrix<T> rhs) {
 
 template <Numeric T>
 inline Matrix<T> operator/(Matrix<T> lhs, T rhs) {
-  assert(rhs != T(0) && "Division by zero is invalid.");
+  CHECK(rhs != T(0) && "Division by zero is invalid.");
   return lhs /= rhs;
 }
 
@@ -226,7 +220,7 @@ template <Numeric T>
 inline Matrix<T> operator/(T lhs, Matrix<T> rhs) {
   for (size_t r = 0; r < rhs.Rows(); ++r) {
     for (size_t c = 0; c < rhs.Cols(); ++c) {
-      assert(rhs(r, c) != T(0) && "Division by zero is invalid.");
+      CHECK(rhs(r, c) != T(0) && "Division by zero is invalid.");
       rhs(r, c) = lhs / rhs(r, c);
     }
   }

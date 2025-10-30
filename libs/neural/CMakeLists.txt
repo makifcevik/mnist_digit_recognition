@@ -13,3 +13,10 @@ add_library(neural_lib
 "include/neural_network.h")
 
 target_include_directories(neural_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_link_libraries(neural_lib 
+  PUBLIC
+	absl::base
+	absl::status
+	absl::check
+    absl::strings)
