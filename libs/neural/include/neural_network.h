@@ -14,7 +14,7 @@
 template <std::floating_point Fp>
 class NeuralNetwork {
  public:
-  using MatType = NeuralLayer<Fp>::MatrixType;
+  using MatType = typename NeuralLayer<Fp>::MatrixType;
   using NetworkLayer = NeuralLayer<Fp>;
 
   // Default constructor and destructor
@@ -36,7 +36,9 @@ class NeuralNetwork {
   void Train(const MatType& rawData, const MatType& rawLabels, uint32_t epochs);
 
  private:
-  std::vector<std::unique_ptr<NeuralLayer>> layers_;
+  std::vector<std::unique_ptr<NetworkLayer>> layers_;
 };
+
+#include "neural_network-inl.h"
 
 #endif  // MNIST_DIGIT_RECOGNITION_LIBS_NEURAL_NEURAL_NETWORK_H_
