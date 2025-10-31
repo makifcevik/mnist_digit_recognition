@@ -9,7 +9,7 @@
 
 // Interface for neural network layers.
 // Each layer must implement Forward, Backward, and UpdateWeights methods.
-// Templated on floating-point type Ty for numerical computations.
+// Templated on floating-point type Fp for numerical computations.
 template <std::floating_point Fp>
 class NeuralLayer {
  public:

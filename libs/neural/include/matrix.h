@@ -32,8 +32,7 @@ class [[nodiscard]] Matrix {
   Matrix& operator=(Matrix&& other) noexcept = default;
 
   // Static Random Matrix Generator
-  static Matrix Random(size_t rows, size_t cols, T min, T max,
-                       uint32_t seed);
+  static Matrix Random(size_t rows, size_t cols, T min, T max, uint32_t seed);
 
   Matrix GetTranspose() const;
 
@@ -45,6 +44,8 @@ class [[nodiscard]] Matrix {
   const T& At(size_t row, size_t col) const;
 
   // Basic Arithmetic Operations
+  // Operator Overloading for mathematical operations is prohibited in Google style,
+  // but since this is a pure mathematical construct, we will make an exception here.
   Matrix operator*(const Matrix& other) const;
   Matrix operator+(const Matrix& other) const;
   Matrix operator-(const Matrix& other) const;
@@ -74,6 +75,8 @@ class [[nodiscard]] Matrix {
 };
 
 // Non-member Scalar Operations
+// Operator Overloading for mathematical operations is prohibited in Google style,
+// but since this is a pure mathematical construct, we will make an exception here.
 template <Numeric T>
 inline Matrix<T> operator*(Matrix<T> lhs, T rhs);
 template <Numeric T>
