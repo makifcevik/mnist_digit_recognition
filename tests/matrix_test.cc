@@ -97,6 +97,36 @@ TEST(GetTranspose, ReturnsTransposedMatrix) {
   EXPECT_EQ(transposed(2, 1), 6);
 }
 
+TEST(CollapseRows, ReturnsSummedUpRowMatrix) {
+  // Arrange
+  std::vector<int> data = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+  Matrix<int> mat(data, 3, 3);
+  // Act
+  auto result =
+      mat.CollapseRows();  // result should be a row matrix: {12, 15, 18}
+  // Assert
+  EXPECT_EQ(1, result.Rows());
+  EXPECT_EQ(3, result.Cols());
+  EXPECT_EQ(12, result(0, 0));
+  EXPECT_EQ(15, result(0, 1));
+  EXPECT_EQ(18, result(0, 2));
+}
+
+TEST(CollapseCols, ReturnsSummedUpColMatrix) {
+  // Arrange
+  std::vector<int> data = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+  Matrix<int> mat(data, 3, 3);
+  // Act
+  auto result =
+      mat.CollapseCols();  // result should be a col matrix: {6, 15, 24}
+  // Assert
+  EXPECT_EQ(3, result.Rows());
+  EXPECT_EQ(1, result.Cols());
+  EXPECT_EQ(6, result(0, 0));
+  EXPECT_EQ(15, result(1, 0));
+  EXPECT_EQ(24, result(2, 0));
+}
+
 TEST(ToVector, ReturnsCorrectDataVector) {
   // Arrange
   std::vector<int> data = {1, 2, 3, 4, 5, 6};
