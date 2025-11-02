@@ -35,6 +35,11 @@ class [[nodiscard]] Matrix {
   static Matrix Random(size_t rows, size_t cols, T min, T max, uint32_t seed);
 
   Matrix GetTranspose() const;
+  
+  // Collapse Functions
+  // Sums over rows or columns, returning a single-row or single-column matrix
+  Matrix CollapseRows() const;  // Returns a row matrix
+  Matrix CollapseCols() const;  // Returns a column matrix
 
   // Element Access
   T& operator()(size_t row, size_t col) noexcept;

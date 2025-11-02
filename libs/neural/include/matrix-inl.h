@@ -48,6 +48,39 @@ Matrix<T> Matrix<T>::GetTranspose() const {
   return transposed;
 }
 
+// Collapse Functions
+// Sums over rows or columns, returning a single-row or single-column matrix
+
+// CollapseRows: returns a row matrix (1 x cols)
+template <Numeric T>
+Matrix<T> Matrix<T>::CollapseRows() const {
+  CHECK(rows_ > 0 && "Cannot collapse rows of an empty matrix.");
+  Matrix<T> result(1, cols_);
+  for (size_t c = 0; c < cols_; ++c) {
+    T sum = T(0);
+    for (size_t r = 0; r < rows_; ++r) {
+      sum += (*this)(r, c);
+    }
+    result(0, c) = sum;
+  }
+  return result;
+}
+
+// CollapseCols: returns a column matrix (rows x 1)
+template <Numeric T>
+Matrix<T> Matrix<T>::CollapseCols() const {
+  CHECK(cols_ > 0 && "Cannot collapse columns of an empty matrix.");
+  Matrix<T> result(rows_, 1);
+  for (size_t r = 0; r < rows_; ++r) {
+    T sum = T(0);
+    for (size_t c = 0; c < cols_; ++c) {
+      sum += (*this)(r, c);
+    }
+    result(r, 0) = sum;
+  }
+  return result;
+}
+
 template <Numeric T>
 T& Matrix<T>::operator()(size_t row, size_t col) noexcept {
   return data_[row * cols_ + col];
