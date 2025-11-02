@@ -10,7 +10,8 @@ add_library(neural_lib
 "include/dataset.h" 
 "include/matrix.h" 
 "include/linear_layer.h" 
-"include/neural_network.h")
+"include/neural_network.h" 
+"include/linear_layer-inl.h")
 
 target_include_directories(neural_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 

@@ -33,7 +33,12 @@ class LinearLayer : public NeuralLayer<Fp> {
  private:
   Matrix<Fp> weights_;
   Matrix<Fp> biases_;
+  Matrix<Fp> grad_weights_;
+  Matrix<Fp> grad_biases_;
+  Matrix<Fp> input_cache_;
   Fp learning_rate_;
 };
+
+#include "linear_layer-inl.h"
 
 #endif  // MNIST_DIGIT_RECOGNITION_LIBS_NEURAL_LINEAR_LAYER_H_
