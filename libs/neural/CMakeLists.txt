@@ -11,7 +11,8 @@ add_library(neural_lib
 "include/matrix.h" 
 "include/linear_layer.h" 
 "include/neural_network.h" 
-"include/linear_layer-inl.h")
+"include/linear_layer-inl.h" 
+"include/loss.h")
 
 target_include_directories(neural_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
