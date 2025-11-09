@@ -5,6 +5,8 @@
 
 #include <absl/log/check.h>
 
+#include "loss.h"
+
 template <std::floating_point Fp>
 void NeuralNetwork<Fp>::AddLayer(std::unique_ptr<NeuralLayer<Fp>> layer) {
   layers_.emplace_back(std::move(layer));
@@ -43,8 +45,7 @@ void NeuralNetwork<Fp>::Train(const MatType& rawData, const MatType& rawLabels,
   for (uint32_t epoch = 0; epoch < epochs; ++epoch) {
     MatType predictions = Forward(rawData);
 
-    // TODO: Implement loss computation here
-    MatType loss_grad;  // TODO: = ComputeLossGradient(predictions, rawLabels);
+    MatType loss_grad = Loss::SoftmaxCrossEntropyGradient<Fp>(predictions, rawLabels);
 
     Backward(loss_grad);
     UpdateWeights();
