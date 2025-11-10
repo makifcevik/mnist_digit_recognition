@@ -68,6 +68,11 @@ class [[nodiscard]] Matrix {
   // Utility Functions
   const std::vector<T>& ToVector() const noexcept;
   std::vector<T>& ToVector() noexcept;
+  Matrix<float> ToFloat(float scale = 1.0f) const;
+  Matrix<double> ToDouble(double scale = 1.0) const;
+
+  Matrix<T> BroadcastRows(size_t new_rows) const;
+  static Matrix<T> OneHotEncode(const Matrix<T>& labels, size_t num_classes);
 
   size_t Rows() const noexcept;
   size_t Cols() const noexcept;

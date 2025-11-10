@@ -153,6 +153,11 @@ Matrix<T>& Matrix<T>::operator+=(const Matrix& other) {
 }
 
 template <Numeric T>
+Matrix<T>& Matrix<T>::operator-=(const Matrix& other) {
+  return *this = (*this) - other;
+}
+
+template <Numeric T>
 Matrix<T>& Matrix<T>::operator*=(T scalar) {
   for (auto& val : data_) {
     val *= scalar;
@@ -193,6 +198,53 @@ const std::vector<T>& Matrix<T>::ToVector() const noexcept {
 template <Numeric T>
 std::vector<T>& Matrix<T>::ToVector() noexcept {
   return data_;
+}
+
+template <Numeric T>
+Matrix<float> Matrix<T>::ToFloat(float scale) const {
+  Matrix<float> result(rows_, cols_);
+  for (size_t r = 0; r < rows_; ++r) {
+    for (size_t c = 0; c < cols_; ++c) {
+      result(r, c) = static_cast<float>((*this)(r, c)) * scale;
+    }
+  }
+  return result;
+}
+
+template <Numeric T>
+Matrix<double> Matrix<T>::ToDouble(double scale) const {
+  Matrix<double> result(rows_, cols_);
+  for (size_t r = 0; r < rows_; ++r) {
+    for (size_t c = 0; c < cols_; ++c) {
+      result(r, c) = static_cast<double>((*this)(r, c)) * scale;
+    }
+  }
+  return result;
+}
+
+template <Numeric T>
+Matrix<T> Matrix<T>::BroadcastRows(size_t new_rows) const {
+  CHECK(new_rows >= rows_ && "New row count must be greater than or equal to current rows.");
+  Matrix<T> result(new_rows, cols_);
+  for (size_t r = 0; r < new_rows; ++r) {
+    for (size_t c = 0; c < cols_; ++c) {
+      result(r, c) = (*this)(r % rows_, c);
+    }
+  }
+  return result;
+}
+
+// Static One-Hot Encoding Function
+template <Numeric T>
+Matrix<T> Matrix<T>::OneHotEncode(const Matrix<T>& labels,
+                                         size_t num_classes) {
+  Matrix<T> one_hot(labels.Rows(), num_classes);
+  for (size_t r = 0; r < labels.Rows(); ++r) {
+    size_t label = static_cast<size_t>(labels(r, 0));
+    CHECK(label < num_classes && "Label out of bounds.");
+    one_hot(r, label) = T(1);
+  }
+  return one_hot;
 }
 
 template <Numeric T>
