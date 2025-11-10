@@ -3,7 +3,8 @@
 #
 
 # Add source to this project's executable.
-add_executable (mnist_digit_recognition "main.cc")
+add_executable (mnist_digit_recognition 
+"main.cc")
 
 if (CMAKE_VERSION VERSION_GREATER 3.20)
   set_property(TARGET mnist_digit_recognition PROPERTY CXX_STANDARD 20)
@@ -13,5 +14,10 @@ target_link_libraries(mnist_digit_recognition
 PRIVATE 
 mnist_loader_lib 
 neural_lib)
+
+# copy for executable target
+add_custom_command(TARGET mnist_digit_recognition POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+          "${CMAKE_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:mnist_digit_recognition>/data")
 
 # TODO: Add tests and install targets if needed.
