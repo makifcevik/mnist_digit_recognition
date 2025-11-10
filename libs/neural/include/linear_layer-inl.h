@@ -11,14 +11,12 @@ LinearLayer<Fp>::LinearLayer(uint32_t input_size, uint32_t output_size,
                              Fp learning_rate, uint32_t seed)
     : weights_(input_size, output_size),
       biases_(1, output_size),  // Biases initialized to zero
-      learning_rate_(learning_rate) {
-
-  // Zero Initialize gradients
-  grad_weights_ = Matrix<Fp>(input_size, output_size);
-  grad_biases_ = Matrix<Fp>(1, output_size);
-
-  input_cache_ = Matrix<Fp>(0, 0);  // Empty cache
-
+      learning_rate_(learning_rate),
+      grad_weights_(input_size,
+                    output_size),    // Initialized to zero
+      grad_biases_(1, output_size),  // Initialized to zero
+      input_cache_(0, 0)             // Empty cache
+{
   // Xaiver initialization
   Fp limit = std::sqrt(Fp(6) / Fp(input_size + output_size));
 
@@ -30,7 +28,7 @@ template <std::floating_point Fp>
 Matrix<Fp> LinearLayer<Fp>::Forward(const Matrix<Fp>& input) {
   // Linear transformation: output = input * weights + biases
   Matrix<Fp> output = input * weights_;
-  output += biases_;
+  output += biases_.BroadcastRows(output.Rows());
   input_cache_ = input;  // Cache input for backpropagation
   return output;
 }
