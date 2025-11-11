@@ -224,7 +224,8 @@ Matrix<double> Matrix<T>::ToDouble(double scale) const {
 
 template <Numeric T>
 Matrix<T> Matrix<T>::BroadcastRows(size_t new_rows) const {
-  CHECK(new_rows >= rows_ && "New row count must be greater than or equal to current rows.");
+  CHECK(new_rows >= rows_ &&
+        "New row count must be greater than or equal to current rows.");
   Matrix<T> result(new_rows, cols_);
   for (size_t r = 0; r < new_rows; ++r) {
     for (size_t c = 0; c < cols_; ++c) {
@@ -234,10 +235,113 @@ Matrix<T> Matrix<T>::BroadcastRows(size_t new_rows) const {
   return result;
 }
 
+template <Numeric T>
+size_t Matrix<T>::ArgMaxRow(size_t row) const {
+  CHECK(row < rows_ && "Row index out of bounds.");
+  size_t max_index = 0;
+  T max_value = (*this)(row, 0);
+  for (size_t c = 1; c < cols_; ++c) {
+    if ((*this)(row, c) > max_value) {
+      max_value = (*this)(row, c);
+      max_index = c;
+    }
+  }
+  return max_index;
+}
+
+template <Numeric T>
+size_t Matrix<T>::ArgMinRow(size_t row) const {
+  CHECK(row < rows_ && "Row index out of bounds.");
+  size_t min_index = 0;
+  T min_value = (*this)(row, 0);
+  for (size_t c = 1; c < cols_; ++c) {
+    if ((*this)(row, c) < min_value) {
+      min_value = (*this)(row, c);
+      min_index = c;
+    }
+  }
+  return min_index;
+}
+
+template <Numeric T>
+size_t Matrix<T>::ArgMaxCol(size_t col) const {
+  CHECK(col < cols_ && "Column index out of bounds.");
+  size_t max_index = 0;
+  T max_value = (*this)(0, col);
+  for (size_t r = 1; r < rows_; ++r) {
+    if ((*this)(r, col) > max_value) {
+      max_value = (*this)(r, col);
+      max_index = r;
+    }
+  }
+  return max_index;
+}
+
+template <Numeric T>
+size_t Matrix<T>::ArgMinCol(size_t col) const {
+  CHECK(col < cols_ && "Column index out of bounds.");
+  size_t min_index = 0;
+  T min_value = (*this)(0, col);
+  for (size_t r = 1; r < rows_; ++r) {
+    if ((*this)(r, col) < min_value) {
+      min_value = (*this)(r, col);
+      min_index = r;
+    }
+  }
+  return min_index;
+}
+
+template <Numeric T>
+T Matrix<T>::MaxInRow(size_t row) const {
+  CHECK(row < rows_ && "Row index out of bounds.");
+  T max_value = (*this)(row, 0);
+  for (size_t c = 1; c < cols_; ++c) {
+    if ((*this)(row, c) > max_value) {
+      max_value = (*this)(row, c);
+    }
+  }
+  return max_value;
+}
+
+template <Numeric T>
+T Matrix<T>::MinInRow(size_t row) const {
+  CHECK(row < rows_ && "Row index out of bounds.");
+  T min_value = (*this)(row, 0);
+  for (size_t c = 1; c < cols_; ++c) {
+    if ((*this)(row, c) < min_value) {
+      min_value = (*this)(row, c);
+    }
+  }
+  return min_value;
+}
+
+template <Numeric T>
+T Matrix<T>::MaxInCol(size_t col) const {
+  CHECK(col < cols_ && "Column index out of bounds.");
+  T max_value = (*this)(0, col);
+  for (size_t r = 1; r < rows_; ++r) {
+    if ((*this)(r, col) > max_value) {
+      max_value = (*this)(r, col);
+    }
+  }
+  return max_value;
+}
+
+template <Numeric T>
+T Matrix<T>::MinInCol(size_t col) const {
+  CHECK(col < cols_ && "Column index out of bounds.");
+  T min_value = (*this)(0, col);
+  for (size_t r = 1; r < rows_; ++r) {
+    if ((*this)(r, col) < min_value) {
+      min_value = (*this)(r, col);
+    }
+  }
+  return min_value;
+}
+
 // Static One-Hot Encoding Function
 template <Numeric T>
-Matrix<T> Matrix<T>::OneHotEncode(const Matrix<T>& labels,
-                                         size_t num_classes) {
+Matrix<T> Matrix<T>::OneHotEncode(const Matrix<T>& labels, size_t num_classes) {
   Matrix<T> one_hot(labels.Rows(), num_classes);
   for (size_t r = 0; r < labels.Rows(); ++r) {
     size_t label = static_cast<size_t>(labels(r, 0));
