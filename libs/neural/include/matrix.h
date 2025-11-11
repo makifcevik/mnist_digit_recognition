@@ -71,7 +71,22 @@ class [[nodiscard]] Matrix {
   Matrix<float> ToFloat(float scale = 1.0f) const;
   Matrix<double> ToDouble(double scale = 1.0) const;
 
+  // Broadcasts the matrix along rows to match new_rows
   Matrix<T> BroadcastRows(size_t new_rows) const;
+
+  // Returns the index of the maximum or maximum element in the specified row / col
+  size_t ArgMaxRow(size_t row) const;
+  size_t ArgMinRow(size_t row) const;
+  size_t ArgMaxCol(size_t col) const;
+  size_t ArgMinCol(size_t col) const;
+
+  // Returns the value of the maximum or minimum element in the specified row / col
+  T MaxInRow(size_t row) const;
+  T MinInRow(size_t row) const;
+  T MaxInCol(size_t col) const;
+  T MinInCol(size_t col) const;
+
+  // One-Hot Encoding
   static Matrix<T> OneHotEncode(const Matrix<T>& labels, size_t num_classes);
 
   size_t Rows() const noexcept;
