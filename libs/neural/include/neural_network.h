@@ -34,6 +34,7 @@ class NeuralNetwork {
   MatType Backward(const MatType& grad_output);
   void UpdateWeights();
   void Train(const MatType& rawData, const MatType& rawLabels, uint32_t epochs);
+  float EvaluateAccuracy(const MatType& data, const MatType& labels);
 
  private:
   std::vector<std::unique_ptr<NetworkLayer>> layers_;

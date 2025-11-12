@@ -51,3 +51,22 @@ void NeuralNetwork<Fp>::Train(const MatType& rawData, const MatType& rawLabels,
     UpdateWeights();
   }
 }
+
+// Evaluate the accuracy of the network on the provided dataset.
+template <std::floating_point Fp>
+float NeuralNetwork<Fp>::EvaluateAccuracy(const MatType& data,
+                                          const MatType& labels) {
+  // Get predictions from the network
+  MatType predictions = Loss::Softmax(Forward(data));
+  size_t correct = 0;
+  size_t samples = predictions.Rows();
+  // Compare predicted labels with true labels for each sample
+  for (size_t i = 0; i < samples; ++i) {
+    size_t predicted_label = predictions.ArgMaxRow(i);
+    size_t true_label = labels.ArgMaxRow(i);
+    if (predicted_label == true_label) {
+      ++correct;
+    }
+  }
+  return static_cast<float>(correct) / static_cast<float>(samples);
+}
