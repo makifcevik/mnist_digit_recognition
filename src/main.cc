@@ -6,6 +6,7 @@
 #include <chrono>
 
 #include "linear_layer.h"
+#include "relu_layer.h"
 #include "loss.h"
 #include "matrix.h"
 #include "mnist_loader.h"
@@ -22,8 +23,8 @@ static void RunExperiment() {
   using Fp = float;
   const size_t kNumClasses = 10;
   const float kNormalizationFactor = 1.0f / 255.0f;
-  const uint32_t kNumEpochs = 5;
-  const uint32_t kBatchSize = 64;
+  const uint32_t kNumEpochs = 3;
+  const uint32_t kBatchSize = 32;
 
   MNISTLoader loader;
 
@@ -43,8 +44,9 @@ static void RunExperiment() {
 
   // Create neural network
   NeuralNetwork<Fp> network;
-  network.AddLayer(std::make_unique<LinearLayer<Fp>>(784, 10, 0.001f, 42));
-  // network.AddLayer(std::make_unique<LinearLayer<Fp>>(128, 10, 0.01f, 43));
+  network.AddLayer(std::make_unique<LinearLayer<Fp>>(784, 64, 0.01f, 42));
+  network.AddLayer(std::make_unique<ReLULayer<Fp>>());
+  network.AddLayer(std::make_unique<LinearLayer<Fp>>(64, 10, 0.01f, 43));
 
   float initial_accuracy =
       network.EvaluateAccuracy(x_train, y_train);
