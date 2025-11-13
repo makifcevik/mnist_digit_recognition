@@ -3,9 +3,9 @@
 #ifndef MNIST_DIGIT_RECOGNITION_LIBS_NEURAL_NEURAL_NETWORK_H_
 #define MNIST_DIGIT_RECOGNITION_LIBS_NEURAL_NEURAL_NETWORK_H_
 
+#include <concepts>
 #include <memory>
 #include <vector>
-#include <concepts>
 
 #include "matrix.h"
 #include "neural_layer.h"
@@ -33,7 +33,8 @@ class NeuralNetwork {
   MatType Forward(const MatType& input);
   MatType Backward(const MatType& grad_output);
   void UpdateWeights();
-  void Train(const MatType& rawData, const MatType& rawLabels, uint32_t epochs);
+  void Train(const MatType& rawData, const MatType& rawLabels, uint32_t epochs,
+             uint32_t batch_size);
   float EvaluateAccuracy(const MatType& data, const MatType& labels);
 
  private:
