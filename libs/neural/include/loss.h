@@ -12,18 +12,20 @@ namespace Loss {
 // Turns one row of logits into probabilities using the softmax function.
 template <std::floating_point Fp>
 Matrix<Fp> Softmax(const Matrix<Fp>& logits) {
-  // Create a copy of logits to store probabilities
-  Matrix<Fp> probabilities = logits;
+  // Create a matrix to store probabilities
+  Matrix<Fp> probabilities{logits.Rows(), logits.Cols()};
   // Row by row softmax computation
   for (size_t r = 0; r < logits.Rows(); ++r) {
+    // Find max logit for numerical stability
+    Fp max_logit = logits.MaxInRow(r);
     // Compute sum of exponentials for the current row (denominator)
     Fp sum_of_exponentials = Fp(0);
     for (size_t c = 0; c < logits.Cols(); ++c) {
-      sum_of_exponentials += std::exp(logits(r, c));
+      sum_of_exponentials += std::exp(logits(r, c) - max_logit);
     }
     // Compute probabilities for the current row
     for (size_t c = 0; c < logits.Cols(); ++c) {
-      probabilities(r, c) = std::exp(logits(r, c)) / sum_of_exponentials;
+      probabilities(r, c) = std::exp(logits(r, c) - max_logit) / sum_of_exponentials;
     }
   }
   return probabilities;
@@ -63,9 +65,9 @@ Matrix<Fp> SoftmaxCrossEntropyGradient(const Matrix<Fp>& logits,
   for (size_t r = 0; r < logits.Rows(); ++r) {
     for (size_t c = 0; c < logits.Cols(); ++c) {
       gradient(r, c) -= true_labels(r, c);  // Subtract true label
-      gradient(r, c) /= static_cast<Fp>(logits.Rows());  // Average
     }
   }
+  gradient /= static_cast<Fp>(logits.Rows());  // Average
 
   return gradient;
 }
