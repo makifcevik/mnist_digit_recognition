@@ -98,8 +98,10 @@ void NeuralNetwork<Fp>::Train(const MatType& rawData, const MatType& rawLabels,
       }
     }  // End of batch loop
 
+    float accuracy = EvaluateAccuracy(rawData, rawLabels);
     LOG(INFO) << "Epoch [" << epoch + 1 << "/" << epochs
-              << "] completed. Average Loss: " << (epoch_loss / kNumBatches);
+              << "] completed. \nAverage Loss: " << (epoch_loss / kNumBatches)
+              << "\nAccuracy: " << accuracy * 100.0f;
   }
 }
 
