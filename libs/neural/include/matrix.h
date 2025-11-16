@@ -74,6 +74,8 @@ class [[nodiscard]] Matrix {
   // Broadcasts the matrix along rows to match new_rows
   Matrix<T> BroadcastRows(size_t new_rows) const;
 
+  Matrix<T> ShuffleRows(uint32_t seed) const;
+
   // Returns the index of the maximum or maximum element in the specified row / col
   size_t ArgMaxRow(size_t row) const;
   size_t ArgMinRow(size_t row) const;

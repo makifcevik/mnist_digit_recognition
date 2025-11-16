@@ -236,6 +236,24 @@ Matrix<T> Matrix<T>::BroadcastRows(size_t new_rows) const {
 }
 
 template <Numeric T>
+Matrix<T> Matrix<T>::ShuffleRows(uint32_t seed) const {
+  Matrix<T> shuffled(*this);
+  std::vector<size_t> indices(rows_);
+  for (size_t i = 0; i < rows_; ++i) {
+    indices[i] = i;
+  }
+  std::mt19937 gen(seed);
+  std::shuffle(indices.begin(), indices.end(), gen);
+  Matrix<T> result(rows_, cols_);
+  for (size_t r = 0; r < rows_; ++r) {
+    for (size_t c = 0; c < cols_; ++c) {
+      result(r, c) = shuffled(indices[r], c);
+    }
+  }
+  return result;
+}
+
+template <Numeric T>
 size_t Matrix<T>::ArgMaxRow(size_t row) const {
   CHECK(row < rows_ && "Row index out of bounds.");
   size_t max_index = 0;
