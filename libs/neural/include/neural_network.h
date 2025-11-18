@@ -33,8 +33,9 @@ class NeuralNetwork {
   MatType Forward(const MatType& input);
   MatType Backward(const MatType& grad_output);
   void UpdateWeights();
-  void Train(const MatType& rawData, const MatType& rawLabels, uint32_t epochs,
-             uint32_t batch_size);
+  void Train(const MatType& raw_train_data, const MatType& raw_train_labels,
+             const MatType& raw_test_data, const MatType& raw_test_labels,
+             uint32_t epochs, uint32_t batch_size);
   float EvaluateAccuracy(const MatType& data, const MatType& labels);
 
  private:

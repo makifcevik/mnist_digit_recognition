@@ -41,24 +41,27 @@ void NeuralNetwork<Fp>::UpdateWeights() {
 }
 
 template <std::floating_point Fp>
-void NeuralNetwork<Fp>::Train(const MatType& raw_data, const MatType& raw_labels,
+void NeuralNetwork<Fp>::Train(const MatType& raw_train_data,
+                              const MatType& raw_train_labels,
+                              const MatType& raw_test_data,
+                              const MatType& raw_test_labels,
                               uint32_t epochs, uint32_t batch_size) {
-  CHECK(raw_data.Rows() == raw_labels.Rows())
+  CHECK(raw_train_data.Rows() == raw_train_labels.Rows())
       << "Number of samples in data and labels must be the same.";
 
-  const size_t kNumSamples = raw_data.Rows();
+  const size_t kNumSamples = raw_train_data.Rows();
   const size_t kNumBatches =
       (kNumSamples + batch_size - 1) / batch_size;  // Ceiling division
 
-  const size_t num_features = raw_data.Cols();
-  const size_t num_classes = raw_labels.Cols();
+  const size_t num_features = raw_train_data.Cols();
+  const size_t num_classes = raw_train_labels.Cols();
 
   for (uint32_t epoch = 0; epoch < epochs; ++epoch) {
     Fp epoch_loss = Fp(0);
 
     // Shuffle data and labels at the start of each epoch
-    MatType shuffled_data = raw_data.ShuffleRows(epoch + 42);
-    MatType shuffled_labels = raw_labels.ShuffleRows(epoch + 42);
+    MatType shuffled_data = raw_train_data.ShuffleRows(epoch + 42);
+    MatType shuffled_labels = raw_train_labels.ShuffleRows(epoch + 42);
 
     // Iterate over each batch
     for (size_t batch_idx = 0; batch_idx < kNumBatches; ++batch_idx) {
@@ -96,16 +99,20 @@ void NeuralNetwork<Fp>::Train(const MatType& raw_data, const MatType& raw_labels
       UpdateWeights();
 
       // Log progress every N batches
-      if (batch_idx % 100 == 0) {
+      if (batch_idx % 500 == 0) {
         LOG(INFO) << "Epoch [" << epoch + 1 << "/" << epochs << "], Batch ["
                   << batch_idx + 1 << "/" << kNumBatches << "], Loss: " << loss;
       }
     }  // End of batch loop
 
-    float accuracy = EvaluateAccuracy(raw_data, raw_labels);
-    LOG(INFO) << "Epoch [" << epoch + 1 << "/" << epochs
-              << "] completed. \nAverage Loss: " << (epoch_loss / kNumBatches)
-              << "\nAccuracy: " << accuracy * 100.0f;
+    float train_accuracy = EvaluateAccuracy(raw_train_data, raw_train_labels);
+    float test_accuracy = EvaluateAccuracy(raw_test_data, raw_test_labels);
+
+    LOG(INFO) << "Epoch [" << epoch + 1 << "/" << epochs << "] completed."
+              << "\nAverage Loss: " << (epoch_loss / kNumBatches)
+              << "\nTraining Accuracy: " << train_accuracy * 100.0f << "%"
+              << "\nTesting Accuracy: " << test_accuracy * 100.0f << "%";
+
   }
 }
 
