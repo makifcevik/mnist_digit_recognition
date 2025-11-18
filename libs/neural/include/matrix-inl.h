@@ -3,7 +3,10 @@
 // This file contains the implementation of the Matrix class template.
 // It is meant to be included only inside matrix.h.
 
+#include <cstdint>
+
 #include <random>
+#include <thread>
 
 #include <absl/log/check.h>
 
@@ -103,10 +106,72 @@ const T& Matrix<T>::At(size_t row, size_t col) const {
   return data_[row * cols_ + col];
 }
 
+// Uses concurrent multiplication algorithm
 template <Numeric T>
 Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
   CHECK(cols_ == other.rows_ &&
         "Matrix dimensions must match for multiplication");
+
+  if (rows_ == 0 || cols_ == 0 || other.cols_ == 0) {
+    return Matrix<T>(rows_, other.cols_);
+  }
+
+  // Get number of available hardware threads
+  uint32_t max_threads = std::thread::hardware_concurrency();
+  // Fallback to 2 threads if hardware_concurrency cannot detect
+  if (max_threads == 0) {
+    max_threads = 2;
+  }
+  // Determine optimal number of threads based on work amount
+  const size_t kMinWorkPerThread = 100'000'000;      // Minimum work per thread
+  const uint64_t kWorkAmount = rows_ * other.cols_ * cols_;  // Approximate work amount
+  uint32_t work_thread_amount = static_cast<uint32_t>(kWorkAmount / kMinWorkPerThread);
+  // If no threading is beneficial, use single-threaded multiplication
+  if (work_thread_amount == 0) {
+    return SingleThreadedMatMul(other);
+  }
+  uint32_t thread_amount =
+      std::min(max_threads, work_thread_amount);
+
+  Matrix<T> result(rows_, other.cols_);
+  Matrix<T> other_T = other.GetTranspose();
+
+  // Lambda function to multiply a slice of rows
+  auto MultiplySlice = [&](size_t start, size_t end) {
+    for (size_t r = start; r < end; ++r) {
+      for (size_t c = 0; c < other_T.rows_; ++c) {
+        T sum = T(0);
+        for (size_t k = 0; k < cols_; ++k) {
+          sum += (*this)(r, k) * other_T(c, k);
+        }
+        result(r, c) = sum;
+      }
+    }
+  };
+  // Calculate the slice start and step size for each thread
+  // end = start + step
+  size_t start = 0;
+  size_t step = rows_ / thread_amount;
+
+  {
+    std::vector<std::jthread> threads;
+    threads.reserve(thread_amount);
+    // Divide work among threads (leave the last thread to handle any remainder)
+    for (size_t i = 0; i < thread_amount - 1; ++i) {
+      threads.emplace_back(MultiplySlice, start, start + step);
+      start += step;
+    }
+    // Last thread handles any remaining rows
+    threads.emplace_back(MultiplySlice, start, rows_);
+  }  // End of thread scope (RAII joins threads)
+
+  return result;
+}
+
+// Private Method
+// Single-threaded matrix multiplication
+template <Numeric T>
+Matrix<T> Matrix<T>::SingleThreadedMatMul(const Matrix<T>& other) const {
   Matrix<T> result(rows_, other.cols_);
   for (size_t r = 0; r < rows_; ++r) {
     for (size_t c = 0; c < other.cols_; ++c) {

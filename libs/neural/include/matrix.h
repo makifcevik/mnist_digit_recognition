@@ -2,6 +2,7 @@
 
 // Defines a template Matrix class for 2D data storage.
 // This class manages memory and provides basic element access.
+// Multithreaded matrix multiplication is supported.
 
 #ifndef MNIST_DIGIT_RECOGNITION_LIBS_NEURAL_MATRIX_H_
 #define MNIST_DIGIT_RECOGNITION_LIBS_NEURAL_MATRIX_H_
@@ -35,7 +36,7 @@ class [[nodiscard]] Matrix {
   static Matrix Random(size_t rows, size_t cols, T min, T max, uint32_t seed);
 
   Matrix GetTranspose() const;
-  
+
   // Collapse Functions
   // Sums over rows or columns, returning a single-row or single-column matrix
   Matrix CollapseRows() const;  // Returns a row matrix
@@ -51,11 +52,12 @@ class [[nodiscard]] Matrix {
   // Basic Arithmetic Operations
   // Operator Overloading for mathematical operations is prohibited in Google style,
   // but since this is a pure mathematical construct, we will make an exception here.
-  Matrix operator*(const Matrix& other) const;
+  Matrix operator*(
+      const Matrix& other) const;  // Uses concurrent multiplication
   Matrix operator+(const Matrix& other) const;
   Matrix operator-(const Matrix& other) const;
 
-  Matrix& operator*=(const Matrix& other);
+  Matrix& operator*=(const Matrix& other);  // Uses concurrent multiplication
   Matrix& operator+=(const Matrix& other);
   Matrix& operator-=(const Matrix& other);
 
@@ -96,6 +98,9 @@ class [[nodiscard]] Matrix {
   //void Print() const;
 
  private:
+  // Internal single-threaded matrix multiplication
+  Matrix SingleThreadedMatMul(const Matrix& other) const;
+
   std::vector<T> data_;
   size_t rows_;
   size_t cols_;
