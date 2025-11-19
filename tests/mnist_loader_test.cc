@@ -1,3 +1,5 @@
+// MIT License
+
 #include "mnist_loader.h"
 
 #include <fstream>
