@@ -123,9 +123,8 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
     max_threads = 2;
   }
   // Determine optimal number of threads based on work amount
-  const size_t kMinWorkPerThread = 100'000'000;      // Minimum work per thread
   const uint64_t kWorkAmount = rows_ * other.cols_ * cols_;  // Approximate work amount
-  uint32_t work_thread_amount = static_cast<uint32_t>(kWorkAmount / kMinWorkPerThread);
+  uint32_t work_thread_amount = static_cast<uint32_t>(kWorkAmount / Matrix<T>::kMinWorkPerThread);
   // If no threading is beneficial, use single-threaded multiplication
   if (work_thread_amount == 0) {
     return SingleThreadedMatMul(other);

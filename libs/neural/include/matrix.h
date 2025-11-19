@@ -16,6 +16,10 @@ concept Numeric = std::integral<T> || std::floating_point<T>;
 template <Numeric T>
 class [[nodiscard]] Matrix {
  public:
+  // Minimum work per thread to justify multithreading
+  // Work is approximated as rows * cols * other.cols
+  inline static uint64_t kMinWorkPerThread = 100'000'000;
+
   // Constructors
   Matrix() = delete;
   explicit Matrix(const std::vector<T>& data, size_t rows, size_t cols);
@@ -78,7 +82,7 @@ class [[nodiscard]] Matrix {
 
   Matrix<T> ShuffleRows(uint32_t seed) const;
 
-  // Returns the index of the maximum or maximum element in the specified row / col
+  // Returns the index of the maximum or minumum element in the specified row / col
   size_t ArgMaxRow(size_t row) const;
   size_t ArgMinRow(size_t row) const;
   size_t ArgMaxCol(size_t col) const;
@@ -95,7 +99,6 @@ class [[nodiscard]] Matrix {
 
   size_t Rows() const noexcept;
   size_t Cols() const noexcept;
-  //void Print() const;
 
  private:
   // Internal single-threaded matrix multiplication
