@@ -136,7 +136,7 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
   Matrix<T> other_T = other.GetTranspose();
 
   // Lambda function to multiply a slice of rows
-  auto MultiplySlice = [&](size_t start, size_t end) {
+  auto MultiplySlice = [&result, &other_T, this](size_t start, size_t end) {
     for (size_t r = start; r < end; ++r) {
       for (size_t c = 0; c < other_T.rows_; ++c) {
         T sum = T(0);
