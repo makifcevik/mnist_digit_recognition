@@ -13,6 +13,7 @@ class ReLULayer : public NeuralLayer<Fp> {
  public:
   ReLULayer() = default;
 
+  LayerType Type() const override;
   Matrix<Fp> Forward(const Matrix<Fp>& input) override;
   Matrix<Fp> Backward(const Matrix<Fp>& grad_output) override;
   void UpdateWeights() override {}  // No parameters to update in ReLU layer
