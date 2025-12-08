@@ -33,3 +33,15 @@ Matrix<Fp> ReLULayer<Fp>::Backward(const Matrix<Fp>& grad_output) {
   }
   return grad_input;
 }
+
+// Serialization
+template <std::floating_point Fp>
+absl::Status ReLULayer<Fp>::Serialize(std::ostream& out) const {
+  // Nothing to save
+  return absl::OkStatus();
+}
+template <std::floating_point Fp>
+absl::Status ReLULayer<Fp>::Deserialize(std::istream& in) {
+  // Nothing to load
+  return absl::OkStatus();
+}
