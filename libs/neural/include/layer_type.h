@@ -9,7 +9,7 @@
 enum class LayerType : uint32_t {
   kUnknown = 0,
   kLinear = 1,
-  kRelu = 2
+  kReLU = 2
 };
 
 #endif  // MNIST_DIGIT_RECOGNITION_LIBS_NEURAL_NEURAL_LAYER_TYPE_H_
