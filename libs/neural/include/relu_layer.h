@@ -18,6 +18,9 @@ class ReLULayer : public NeuralLayer<Fp> {
   Matrix<Fp> Backward(const Matrix<Fp>& grad_output) override;
   void UpdateWeights() override {}  // No parameters to update in ReLU layer
 
+  absl::Status Serialize(std::ostream& out) const override;
+  absl::Status Deserialize(std::istream& in) override;
+
  private:
   Matrix<Fp> input_cache_{0, 0};
 };
