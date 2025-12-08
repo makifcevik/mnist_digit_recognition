@@ -10,6 +10,9 @@
 
 #include <absl/log/check.h>
 
+template <Numeric T>
+Matrix<T>::Matrix() : rows_(0), cols_(0) {}
+
 // Constructor from data vector
 template <Numeric T>
 Matrix<T>::Matrix(const std::vector<T>& data, size_t rows, size_t cols)
@@ -40,6 +43,19 @@ Matrix<T> Matrix<T>::Random(size_t rows, size_t cols, T min, T max,
   return Matrix<T>(data, rows, cols);
 }
 
+template <Numeric T>
+void Matrix<T>::Resize(size_t new_rows, size_t new_cols) {
+  rows_ = new_rows;
+  cols_ = new_cols;
+  data_.resize(rows_ * cols_);
+}
+
+template <Numeric T>
+void Matrix<T>::Resize(size_t new_rows, size_t new_cols, T val) {
+  rows_ = new_rows;
+  cols_ = new_cols;
+  data_.resize(rows_ * cols_, val);
+}
 template <Numeric T>
 Matrix<T> Matrix<T>::GetTranspose() const {
   Matrix<T> transposed(cols_, rows_);
