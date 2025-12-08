@@ -193,14 +193,15 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
     max_threads = 2;
   }
   // Determine optimal number of threads based on work amount
-  const uint64_t kWorkAmount = rows_ * other.cols_ * cols_;  // Approximate work amount
-  uint32_t work_thread_amount = static_cast<uint32_t>(kWorkAmount / Matrix<T>::kMinWorkPerThread);
+  const uint64_t kWorkAmount =
+      rows_ * other.cols_ * cols_;  // Approximate work amount
+  uint32_t work_thread_amount =
+      static_cast<uint32_t>(kWorkAmount / Matrix<T>::kMinWorkPerThread);
   // If no threading is beneficial, use single-threaded multiplication
   if (work_thread_amount == 0) {
     return SingleThreadedMatMul(other);
   }
-  uint32_t thread_amount =
-      std::min(max_threads, work_thread_amount);
+  uint32_t thread_amount = std::min(max_threads, work_thread_amount);
 
   Matrix<T> result(rows_, other.cols_);
   Matrix<T> other_T = other.GetTranspose();
