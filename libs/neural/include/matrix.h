@@ -10,11 +10,13 @@
 #include <concepts>
 #include <vector>
 
+#include "serializable.h"
+
 template <typename T>
 concept Numeric = std::integral<T> || std::floating_point<T>;
 
 template <Numeric T>
-class [[nodiscard]] Matrix {
+class [[nodiscard]] Matrix : Serializable {
  public:
   // Minimum work per thread to justify multithreading
   // Work is approximated as rows * cols * other.cols
@@ -38,6 +40,10 @@ class [[nodiscard]] Matrix {
 
   // Static Random Matrix Generator
   static Matrix Random(size_t rows, size_t cols, T min, T max, uint32_t seed);
+
+  // Serialization
+  absl::Status Serialize(std::ostream& out) const override;
+  absl::Status Deserialize(std::istream& in) override;
 
   void Resize(size_t new_rows, size_t new_cols);
   void Resize(size_t new_rows, size_t new_cols, T val);
