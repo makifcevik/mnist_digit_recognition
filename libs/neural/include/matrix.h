@@ -21,7 +21,7 @@ class [[nodiscard]] Matrix {
   inline static uint64_t kMinWorkPerThread = 100'000'000;
 
   // Constructors
-  Matrix() = delete;
+  Matrix();
   explicit Matrix(const std::vector<T>& data, size_t rows, size_t cols);
   explicit Matrix(size_t rows, size_t cols);
 
@@ -38,6 +38,9 @@ class [[nodiscard]] Matrix {
 
   // Static Random Matrix Generator
   static Matrix Random(size_t rows, size_t cols, T min, T max, uint32_t seed);
+
+  void Resize(size_t new_rows, size_t new_cols);
+  void Resize(size_t new_rows, size_t new_cols, T val);
 
   Matrix GetTranspose() const;
 
