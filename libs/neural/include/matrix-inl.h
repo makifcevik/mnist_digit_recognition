@@ -9,6 +9,9 @@
 #include <thread>
 
 #include <absl/log/check.h>
+#include <absl/strings/str_cat.h>
+
+#include "type_traits.h"
 
 template <Numeric T>
 Matrix<T>::Matrix() : rows_(0), cols_(0) {}
@@ -43,6 +46,56 @@ Matrix<T> Matrix<T>::Random(size_t rows, size_t cols, T min, T max,
   return Matrix<T>(data, rows, cols);
 }
 
+// Serialization
+template <Numeric T>
+absl::Status Matrix<T>::Serialize(std::ostream& out) const {
+  // Handle type T
+  DataType type_id = TypeToEnum<T>::value;
+  if (type_id == DataType::kUnknown) {
+    return absl::UnimplementedError(
+        "Trying to save a Matrix with an unsupported type.");
+  }
+  out.write(reinterpret_cast<const char*>(&type_id), sizeof(type_id));
+
+  // Save dimensions
+  out.write(reinterpret_cast<const char*>(&rows_), sizeof(rows_));
+  out.write(reinterpret_cast<const char*>(&cols_), sizeof(cols_));
+
+  // Save data
+  out.write(reinterpret_cast<const char*>(data_.data()),
+            data_.size() * sizeof(T));
+
+  return absl::OkStatus();
+}
+template <Numeric T>
+absl::Status Matrix<T>::Deserialize(std::istream& in) {
+  // Read type T
+  DataType stored_type;
+  in.read(reinterpret_cast<char*>(&stored_type), sizeof(stored_type));
+  if (in.fail())
+    return absl::DataLossError("Failed to read matrix type.");
+
+  DataType expected_type = TypeToEnum<T>::value;
+  if (expected_type != stored_type)
+    return absl::InvalidArgumentError(absl::StrCat(
+        "Type mismatch! File containing type ID: ",
+        static_cast<uint32_t>(stored_type),
+        " but matrix expects type ID: ", static_cast<uint32_t>(expected_type)));
+
+  // Read dimensions
+  size_t r, c;
+  in.read(reinterpret_cast<char*>(&r), sizeof(r));
+  in.read(reinterpret_cast<char*>(&c), sizeof(c));
+
+  // Resize
+  this->Resize(r, c);
+
+  // Read data
+  in.read(reinterpret_cast<char*>(data_.data()), data_.size() * sizeof(T));
+
+  return absl::OkStatus();
+}
+
 template <Numeric T>
 void Matrix<T>::Resize(size_t new_rows, size_t new_cols) {
   rows_ = new_rows;
@@ -56,6 +109,7 @@ void Matrix<T>::Resize(size_t new_rows, size_t new_cols, T val) {
   cols_ = new_cols;
   data_.resize(rows_ * cols_, val);
 }
+
 template <Numeric T>
 Matrix<T> Matrix<T>::GetTranspose() const {
   Matrix<T> transposed(cols_, rows_);
