@@ -10,7 +10,6 @@
 #include "matrix.h"
 #include "neural_layer.h"
 
-
 // Defines a linear network layer
 template <std::floating_point Fp>
 class LinearLayer : public NeuralLayer<Fp> {

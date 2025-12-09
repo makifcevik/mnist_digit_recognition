@@ -7,6 +7,15 @@
 #include <random>
 
 template <std::floating_point Fp>
+LinearLayer<Fp>::LinearLayer()
+    : weights_(),
+      biases_(),
+      learning_rate_(Fp(0)),
+      grad_weights_(),
+      grad_biases_(),
+      input_cache_() {}
+
+template <std::floating_point Fp>
 LinearLayer<Fp>::LinearLayer(uint32_t input_size, uint32_t output_size,
                              Fp learning_rate, uint32_t seed)
     : weights_(input_size, output_size),
@@ -22,6 +31,11 @@ LinearLayer<Fp>::LinearLayer(uint32_t input_size, uint32_t output_size,
 
   // Initialize weights with random values in [-limit, limit]
   weights_ = Matrix<Fp>::Random(input_size, output_size, -limit, limit, seed);
+}
+
+template <std::floating_point Fp>
+LayerType LinearLayer<Fp>::Type() const {
+  return LayerType::kLinear;
 }
 
 template <std::floating_point Fp>
