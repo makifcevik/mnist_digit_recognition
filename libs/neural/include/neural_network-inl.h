@@ -134,3 +134,38 @@ float NeuralNetwork<Fp>::EvaluateAccuracy(const MatType& data,
   }
   return static_cast<float>(correct) / static_cast<float>(samples);
 }
+
+// Serialization
+template <std::floating_point Fp>
+absl::Status NeuralNetwork<Fp>::Serialize(std::ostream& out) const {
+  // Handle Type Fp
+  DataType data_type = TypeToEnum<Fp>::value;
+  out.write(reinterpret_cast<const char*>(&data_type), sizeof(data_type));
+
+  // Number of layers
+  uint32_t num_layers = static_cast<uint32_t>(layers_.size());
+  out.write(reinterpret_cast<const char*>(&num_layers), sizeof(num_layers));
+
+  // Layers
+  for (const auto& layer : layers_) {
+    // Layer ID
+    LayerType layer_type = layer->Type();
+    out.write(reinterpret_cast<const char*>(&layer_type), sizeof(layer_type));
+
+    // Serialize layer
+    absl::Status status = layer->Serialize(out);
+    if (!status.ok())
+      return status;
+  }
+  return absl::OkStatus();
+}
+
+template <std::floating_point Fp>
+const NeuralNetwork<Fp>::Layers& NeuralNetwork<Fp>::GetLayers() const {
+  return layers_;
+}
+
+template <std::floating_point Fp>
+void NeuralNetwork<Fp>::Clear() {
+  layers_.clear();
+}
