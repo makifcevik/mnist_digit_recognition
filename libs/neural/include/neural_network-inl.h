@@ -44,8 +44,8 @@ template <std::floating_point Fp>
 void NeuralNetwork<Fp>::Train(const MatType& raw_train_data,
                               const MatType& raw_train_labels,
                               const MatType& raw_test_data,
-                              const MatType& raw_test_labels,
-                              uint32_t epochs, uint32_t batch_size) {
+                              const MatType& raw_test_labels, uint32_t epochs,
+                              uint32_t batch_size, EpochCallback on_epoch_end) {
   CHECK(raw_train_data.Rows() == raw_train_labels.Rows())
       << "Number of samples in data and labels must be the same.";
 
@@ -95,7 +95,7 @@ void NeuralNetwork<Fp>::Train(const MatType& raw_train_data,
       epoch_loss += loss;
 
       // Backward pass and weight update
-      Backward(loss_grad);
+      (void)Backward(loss_grad);
       UpdateWeights();
 
       // Log progress every N batches
@@ -113,7 +113,12 @@ void NeuralNetwork<Fp>::Train(const MatType& raw_train_data,
               << "\nTraining Accuracy: " << train_accuracy * 100.0f << "%"
               << "\nTesting Accuracy: " << test_accuracy * 100.0f << "%";
 
-  }
+    // If the user provided a callback, fire it
+    // on_epoch_end defaults to nullptr if the user didn't provide anything
+    if (on_epoch_end)
+        on_epoch_end(epoch, test_accuracy);
+
+  } // End of epoch loop
 }
 
 // Evaluate the accuracy of the network on the provided dataset.
