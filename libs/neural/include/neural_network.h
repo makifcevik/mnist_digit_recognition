@@ -6,6 +6,7 @@
 #include <concepts>
 #include <memory>
 #include <vector>
+#include <functional>
 
 #include <absl/status/status.h>
 
@@ -20,6 +21,7 @@ class NeuralNetwork {
   using MatType = typename NeuralLayer<Fp>::MatrixType;
   using NetworkLayer = NeuralLayer<Fp>;
   using Layers = std::vector<std::unique_ptr<NeuralLayer<Fp>>>;
+  using EpochCallback = std::function<void(uint32_t, float)>;
 
   // Default constructor and destructor
   NeuralNetwork() = default;
@@ -39,7 +41,7 @@ class NeuralNetwork {
   void UpdateWeights();
   void Train(const MatType& raw_train_data, const MatType& raw_train_labels,
              const MatType& raw_test_data, const MatType& raw_test_labels,
-             uint32_t epochs, uint32_t batch_size);
+             uint32_t epochs, uint32_t batch_size, EpochCallback on_epoch_end = nullptr);
   float EvaluateAccuracy(const MatType& data, const MatType& labels);
 
   // Serialization
