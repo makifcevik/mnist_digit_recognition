@@ -32,6 +32,9 @@ class LinearLayer : public NeuralLayer<Fp> {
   Matrix<Fp> Backward(const Matrix<Fp>& grad_output) override;
   void UpdateWeights() override;
 
+  Fp GetLearningRate() const;
+  void SetLearningRate(Fp lr);
+
  private:
   Matrix<Fp> weights_;
   Matrix<Fp> biases_;
