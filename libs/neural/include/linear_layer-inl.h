@@ -64,3 +64,72 @@ void LinearLayer<Fp>::UpdateWeights() {
   weights_ -= grad_weights_ * learning_rate_;
   biases_ -= grad_biases_ * learning_rate_;
 }
+
+// Serialization
+template <std::floating_point Fp>
+absl::Status LinearLayer<Fp>::Serialize(std::ostream& out) const {
+  // Handle type Fp
+  DataType type_id = TypeToEnum<Fp>::value;
+  out.write(reinterpret_cast<const char*>(&type_id), sizeof(type_id));
+
+  // Save learning rate
+  out.write(reinterpret_cast<const char*>(&learning_rate_),
+            sizeof(learning_rate_));
+
+  // Save weights
+  absl::Status status = weights_.Serialize(out);
+  if (!status.ok())
+    return status;
+
+  // Save biases (returns absl::Status)
+  return biases_.Serialize(out);
+}
+template <std::floating_point Fp>
+absl::Status LinearLayer<Fp>::Deserialize(std::istream& in) {
+  // Handle type Fp
+  DataType stored_type;
+  in.read(reinterpret_cast<char*>(&stored_type), sizeof(stored_type));
+  if (in.fail())
+    return absl::DataLossError("Failed to read type data of linear layer");
+  DataType expected_type = TypeToEnum<Fp>::value;
+
+  if (expected_type != stored_type)
+    return absl::InvalidArgumentError(
+        absl::StrCat("Type mismatch! File containing type ID: ",
+                     static_cast<uint32_t>(stored_type),
+                     " but linear layer expects type ID: ",
+                     static_cast<uint32_t>(expected_type)));
+
+  // Read learning rate
+  in.read(reinterpret_cast<char*>(&learning_rate_), sizeof(learning_rate_));
+  if (in.fail())
+    return absl::DataLossError("Failed to read learning rate");
+
+  // Read weights
+  absl::Status status = weights_.Deserialize(in);
+  if (!status.ok())
+    return status;
+
+  // Read biases (returns absl::Status)
+  status = biases_.Deserialize(in);
+  if (!status.ok())
+    return status;
+
+  // --- CRITICAL
+  // Since we used the default constructor, grad_weights_ is 0x0.
+  // We must resize it to match the newly loaded weights_, otherwise
+  // the first training step after loading will crash.
+  grad_weights_.Resize(weights_.Rows(), weights_.Cols(), 0);
+  grad_biases_.Resize(biases_.Rows(), biases_.Cols(), 0);
+  
+  return absl::OkStatus();
+}
+
+template <std::floating_point Fp>
+Fp LinearLayer<Fp>::GetLearningRate() const {
+  return learning_rate_;
+}
+template <std::floating_point Fp>
+void LinearLayer<Fp>::SetLearningRate(Fp lr) {
+  learning_rate_ = lr;
+}
