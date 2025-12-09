@@ -20,4 +20,8 @@ add_custom_command(TARGET mnist_digit_recognition POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory
           "${CMAKE_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:mnist_digit_recognition>/data")
 
+add_custom_command(TARGET mnist_digit_recognition POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+          "${CMAKE_SOURCE_DIR}/models" "$<TARGET_FILE_DIR:mnist_digit_recognition>/models")
+
 # TODO: Add tests and install targets if needed.
