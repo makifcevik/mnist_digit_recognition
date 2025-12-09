@@ -32,6 +32,10 @@ class LinearLayer : public NeuralLayer<Fp> {
   Matrix<Fp> Backward(const Matrix<Fp>& grad_output) override;
   void UpdateWeights() override;
 
+  // Serialization
+  absl::Status Serialize(std::ostream& out) const override;
+  absl::Status Deserialize(std::istream& in) override;
+
   Fp GetLearningRate() const;
   void SetLearningRate(Fp lr);
 
