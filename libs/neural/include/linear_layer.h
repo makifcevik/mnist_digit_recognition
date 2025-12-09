@@ -15,6 +15,7 @@
 template <std::floating_point Fp>
 class LinearLayer : public NeuralLayer<Fp> {
  public:
+  LinearLayer();
   explicit LinearLayer(uint32_t input_size, uint32_t output_size,
                        Fp learning_rate, uint32_t seed);
   ~LinearLayer() override = default;
@@ -26,6 +27,7 @@ class LinearLayer : public NeuralLayer<Fp> {
   LinearLayer(LinearLayer&&) noexcept = default;
   LinearLayer& operator=(LinearLayer&&) noexcept = default;
 
+  LayerType Type() const override;
   Matrix<Fp> Forward(const Matrix<Fp>& input) override;
   Matrix<Fp> Backward(const Matrix<Fp>& grad_output) override;
   void UpdateWeights() override;
