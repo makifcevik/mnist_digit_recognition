@@ -13,5 +13,6 @@ target_link_libraries(neural_lib
   INTERFACE
 	absl::base
 	absl::status
+	absl::statusor
 	absl::check
     absl::strings)
