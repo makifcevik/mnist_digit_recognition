@@ -38,6 +38,9 @@ class NeuralNetwork {
              uint32_t epochs, uint32_t batch_size);
   float EvaluateAccuracy(const MatType& data, const MatType& labels);
 
+  const Layers& GetLayers() const;
+  void Clear();
+
  private:
   std::vector<std::unique_ptr<NetworkLayer>> layers_;
 };
