@@ -30,7 +30,12 @@ FetchContent_Declare(
   URL https://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.zip
 )
 set(ABSL_PROPAGATE_CXX_STD ON)
-FetchContent_MakeAvailable(abseil)
+FetchContent_GetProperties(abseil)
+if(NOT abseil_POPULATED)
+  FetchContent_Populate(abseil)
+  # EXCLUDE_FROM_ALL prevents building targets not required by the executable
+  add_subdirectory(${abseil_SOURCE_DIR} ${abseil_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
 
 enable_testing()
 
