@@ -2,9 +2,12 @@
 # project specific logic here.
 #
 
+# This passes the CMAKE_SOURCE_DIR variable to C++ as a string literal
+add_compile_definitions(PROJECT_ROOT_PATH="${CMAKE_SOURCE_DIR}")
+
 # Add source to this project's executable.
 add_executable (mnist_digit_recognition 
-"main.cc")
+"main.cc" "experiments.cc")
 
 if (CMAKE_VERSION VERSION_GREATER 3.20)
   set_property(TARGET mnist_digit_recognition PROPERTY CXX_STANDARD 20)
