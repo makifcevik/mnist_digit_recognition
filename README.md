@@ -70,16 +70,19 @@ This project adheres to **Google C++ Style** principles and Modern C++ practices
 git clone [https://github.com/makifcevik/mnist_digit_recognition.git](https://github.com/makifcevik/mnist_digit_recognition.git)
 cd mnist_digit_recognition
 
-mkdir build && cd build
+mkdir build
+cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build . --config Release
 ```
 
 ### Run
-To train the model:
+To run the application (runs the inference mode with a pretrained model by default):
 ```bash
-./mnist_digit_recognition
+cd src/Release
+./mnist_digit_recognition.exe
 ```
+The executable is located under `build/src/Release` (or `build/src/Debug`) because Visual Studio builds create subfolders. If you are on a different system, it should be directly under the `build` folder.
 
 ## Dataset
 
