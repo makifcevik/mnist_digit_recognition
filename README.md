@@ -64,16 +64,18 @@ This project adheres to **Google C++ Style** principles and Modern C++ practices
 ### Prerequisites
 * CMake (3.20+)
 * C++ Compiler supporting C++20 (GCC, Clang, or MSVC)
+* [vcpkg](https://github.com/microsoft/vcpkg) for dependency management (Abseil, GTest)
 
 ### Build
 ```bash
 git clone [https://github.com/makifcevik/mnist_digit_recognition.git](https://github.com/makifcevik/mnist_digit_recognition.git)
 cd mnist_digit_recognition
 
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-cmake --build . --config Release
+# Configure the project (replace with your actual vcpkg path)
+cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE="C:/PATH_TO_vcpkg/scripts/buildsystems/vcpkg.cmake"
+
+# Build the project
+cmake --build build --config Release
 ```
 
 ### Run
