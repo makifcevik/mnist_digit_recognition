@@ -42,6 +42,9 @@ Everything, from memory management and matrix multiplication to Softmax and Back
 * **Metrics:** Real-time logging of Training vs. Testing accuracy/loss.
 * **Inference:** Fast forward-pass evaluation for testing.
 
+### 4. Custom Binary Serialization Protocol
+* **Persistent Model Weights:** Efficient model saving & loading without re-training.
+
 ## Tech Stack & Engineering
 
 This project adheres to **Google C++ Style** principles and Modern C++ practices:
@@ -49,7 +52,8 @@ This project adheres to **Google C++ Style** principles and Modern C++ practices
 * **C++20:** Utilizes modern features (concepts, auto, etc.).
 * **Abseil (absl):** Used for robust error handling (Check()) and logging, strictly avoiding C++ exceptions.
 * **Google Test (GTest):** Comprehensive unit testing for the matrix engine and network components.
-* **CMake:** Professional build system handling dependencies and cross-platform compilation.
+* **CMake & vcpkg:** Professional build system handling dependencies and cross-platform compilation.
+* **Github Actions**: Automated cross platform builds & testing.
 
 ## Performance Optimizations
 
@@ -78,6 +82,13 @@ cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE="C:/PATH_TO_vcpkg/scripts/buildsystem
 cmake --build build --config Release
 ```
 
+### Download Dataset
+Before running the executable, download the MNIST dataset using the provided zero-dependency script:
+```bash
+python ./scripts/download_mnist.py
+```
+This automatically downloads and extracts the binary files into a local `data/` directory
+
 ### Run
 To run the application (runs the inference mode with a pretrained model by default):
 ```bash
@@ -93,7 +104,7 @@ The project uses MNIST, consisting of 60,000 training images and 10,000 test ima
 - Input: 28x28 grayscale images (flattened to 784 features).
 - Output: 10 classes (Digits 0-9).
 
-Note: The dataset loader expects the standard binary (`.idx1` & `.idx3`) format (e.g from [Kaggle](https://www.kaggle.com/datasets/hojjatk/mnist-dataset)).
+The engine automatically handles both standard naming conventions (hyphens or dots) for the binary `.idx1` and `.idx3` files.
 
 ## Lessons Learned
 
