@@ -8,6 +8,18 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# CMake and Visual Studio build artifacts
+/out/
+/build/
+.vs/
+CMakeCache.txt
+CMakeFiles/
+CMakeUserPresets.json
+
+# vcpkg artifacts
+/vcpkg_installed/
+.vcpkg-root
+
 # User-specific files
 *.rsuser
 *.suo

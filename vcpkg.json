@@ -1,0 +1,8 @@
+{
+    "name": "mnist-digit-recognition",
+    "version": "0.1.0",
+    "dependencies": [
+        "gtest",
+        "abseil"
+    ]
+}

@@ -1,0 +1,28 @@
+name: Build and Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # This action sets up vcpkg, reads vcpkg.json, and caches the built libraries
+      - name: Setup vcpkg and Build Dependencies
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: 'master' # Or pin to a specific vcpkg commit for stability
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+
+      - name: Configure CMake
+        # This automatically uses the toolchain, generator, and build type defined in the preset
+        run: cmake --preset x64-release
+
+      - name: Build
+        # Use the same preset name to build
+        run: cmake --build --preset x64-release
+
+      - name: Run Tests
+        run: ctest --test-dir build --output-on-failure
