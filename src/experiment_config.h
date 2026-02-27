@@ -7,6 +7,19 @@
 #include <filesystem>
 #include <string>
 
+// Helper function to handle both hypen (Offical) and dot (Kaggle) file naming conventions.
+inline std::string resolve_mnist_path(const std::filesystem::path& base,
+                                      const std::filesystem::path& hypen_name,
+                                      const std::filesystem::path& dot_name) {
+  std::filesystem::path hypen_path = base / "data" / hypen_name;
+  std::filesystem::path dot_path = base / "data" / dot_name;
+  // Prefer dot if it exists
+  if (std::filesystem::exists(dot_path))
+    return dot_path.string();
+  else
+    return hypen_path.string();
+}
+
 // Contains configuration values ragarding experiment.
 // Default values (values in this file) can be overriden in other files.
 struct ExperimentConfig {
@@ -16,7 +29,7 @@ struct ExperimentConfig {
 #ifdef PROJECT_ROOT_PATH
   std::filesystem::path base_path = PROJECT_ROOT_PATH;
 #else
-  std::string base_path = ".";
+  std::filesystem::path base_path = ".";
 #endif
 
   // Model name
@@ -25,16 +38,16 @@ struct ExperimentConfig {
   std::filesystem::path model_path = (base_path / "models");
 
   // Train dataset path
-  std::string train_images_path =
-      (base_path / "data" / "train-images.idx3-ubyte").string();
-  std::string train_labels_path =
-      (base_path / "data" / "train-labels.idx1-ubyte").string();
+  std::string train_images_path = resolve_mnist_path(
+      base_path, "train-images-idx3-ubyte", "train-images.idx3-ubyte");
+  std::string train_labels_path = resolve_mnist_path(
+      base_path, "train-labels-idx1-ubyte", "train-labels.idx1-ubyte");
+
   // Test dataset path
-  std::string test_images_path =
-      (base_path / "data" / "t10k-images.idx3-ubyte").string();
-  std::string test_labels_path =
-      (base_path / "data" / "t10k-labels.idx1-ubyte").string();
-  
+  std::string test_images_path = resolve_mnist_path(
+      base_path, "t10k-images-idx3-ubyte", "t10k-images.idx3-ubyte");
+  std::string test_labels_path = resolve_mnist_path(
+      base_path, "t10k-labels-idx1-ubyte", "t10k-labels.idx1-ubyte");
 
   // Hyperparameters
   uint32_t epochs = 3;
