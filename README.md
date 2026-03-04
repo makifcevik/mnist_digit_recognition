@@ -72,7 +72,7 @@ This project adheres to **Google C++ Style** principles and Modern C++ practices
 
 ### Build
 ```bash
-git clone [https://github.com/makifcevik/mnist_digit_recognition.git](https://github.com/makifcevik/mnist_digit_recognition.git)
+git clone https://github.com/makifcevik/mnist_digit_recognition.git
 cd mnist_digit_recognition
 
 # Configure the project (replace with your actual vcpkg path)
